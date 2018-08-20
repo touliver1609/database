@@ -1,26 +1,19 @@
-drop table public."ticketOffices";
-create type status as enum('hired','available','overdue','unavilable');
-CREATE TABLE public."ticketOffices" (
-	id int4 NOT NULL,
-	"officeIndex" int4 NOT NULL,
-	"blockId" int4 NOT NULL,
+--DROP TABLE public."ticketOffices";
+CREATE TABLE public."ticketOffices"(
+	"id" serial NOT NULL,
+	"idTicketOffice" varchar NOT NULL UNIQUE,
 	"status" status NOT NULL,
-	"rentedDate" date NOT NULL,
-	"expirationDate" date NOT NULL,
-	"companyId" int4 NOT NULL,
-	"createdAt" date NOT NULL,
-	"updatedAt" date NOT NULL,
-	CONSTRAINT ticketoffices_pk PRIMARY KEY (id),
-	CONSTRAINT ticketoffices_blocks_fk FOREIGN KEY ("blockId") REFERENCES blocks(id) ON UPDATE CASCADE ON DELETE CASCADE,
-	CONSTRAINT ticketoffices_companies_fk FOREIGN KEY ("companyId") REFERENCES companies(id) ON UPDATE CASCADE ON DELETE CASCADE
+	"officeIndex" INTEGER NOT NULL,
+	"blockId" integer NOT NULL,
+	"createdAt"  date NOT NULL,
+	"updatedAt"  date NOT NULL,
+	CONSTRAINT ticketOffices_pk PRIMARY KEY (id),
+	constraint ticketOffices_areas_fk foreign key ("blockId") references public."areas"(id)
 );
-INSERT INTO public."ticketOffices" VALUES (1,1,1,'hired','2018-05-15','2018-09-10',1,'2018-08-16','2018-08-16');
-INSERT INTO public."ticketOffices" VALUES (2,2,1,'available','2018-05-15','2018-09-10',2,'2018-08-16','2018-08-16');
-INSERT INTO public."ticketOffices" VALUES (3,1,2,'available','2018-05-15','2018-09-10',2,'2018-08-16','2018-08-16');
-select * from public."ticketOffices";
---select all ticketOffice with condition is company relation have value field active is false 
-select a.id,a."companyId", a.status, a."rentedDate", a."expirationDate",b.active from public."ticketOffices" as a
-, public."companies" as b where b."id"=a."companyId" and b.active = false;
---select all ticketOffice with condition have value field blockId is 1 
-select a.id,  a."blockId",a."companyId", a."status", a."rentedDate", a."expirationDate" from public."ticketOffices" as a
-where  a."blockId" = 1;
+
+INSERT INTO public."ticketOffices" VALUES ('1','B11','available','1','2','2018-08-18','2018-08-18');
+INSERT INTO public."ticketOffices" VALUES ('2','B12','unavailable','2','2','2018-08-18','2018-08-18');
+--INSERT INTO public."seats" VALUES ('3','B13','abc','3','100'); => fail
+SELECT * FROM public."ticketOffices";
+-- query with condition area is parkingLost
+select * from public."ticketOffices" where "blockId"=2;
